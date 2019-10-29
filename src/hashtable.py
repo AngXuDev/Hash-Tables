@@ -90,7 +90,7 @@ class HashTable:
 
         # check for existence
         if current.key == key:
-            current = current.next
+            self.storage[index] = current.next
             return
 
         # if not on initial level, check if on linked list
