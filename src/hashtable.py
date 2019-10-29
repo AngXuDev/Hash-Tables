@@ -89,8 +89,8 @@ class HashTable:
         current = self.storage[index]
 
         # check for existence
-        if self.storage[index].key == key:
-            self.storage[index] = self.storage[index].next
+        if current.key == key:
+            current = current.next
             return
 
         # if not on initial level, check if on linked list
@@ -114,12 +114,13 @@ class HashTable:
         Fill this in.
         '''
         index = self._hash_mod(key)
-
+        # store initial node
         current = self.storage[index]
 
         while current:
             if current.key == key:
                 return current.value
+            # if no match change pointer
             else:
                 current = current.next
         # if not in linked list return none
