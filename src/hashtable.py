@@ -51,7 +51,7 @@ class HashTable:
 
         Fill this in.
         '''
-        # find integer index
+        # find integer index.
         index = self._hash_mod(key)
 
         # check if a key/value pair already exists, if not create a linkedpair
