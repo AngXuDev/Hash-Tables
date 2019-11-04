@@ -1,21 +1,24 @@
 # '''
 # Linked List hash table key/value pair
 # '''
+
+
 class LinkedPair:
     def __init__(self, key, value):
         self.key = key
         self.value = value
         self.next = None
 
+
 class HashTable:
     '''
     A hash table that with `capacity` buckets
     that accepts string keys
     '''
+
     def __init__(self, capacity):
         self.capacity = capacity  # Number of buckets in the hash table
         self.storage = [None] * capacity
-
 
     def _hash(self, key):
         '''
@@ -25,7 +28,6 @@ class HashTable:
         '''
         return hash(key)
 
-
     def _hash_djb2(self, key):
         '''
         Hash an arbitrary key using DJB2 hash
@@ -34,14 +36,12 @@ class HashTable:
         '''
         pass
 
-
     def _hash_mod(self, key):
         '''
         Take an arbitrary key and return a valid integer index
         within the storage capacity of the hash table.
         '''
         return self._hash(key) % self.capacity
-
 
     def insert(self, key, value):
         '''
@@ -51,9 +51,30 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        # find integer index.
+        index = self._hash_mod(key)
 
-
+        # check if a key/value pair already exists, if not create a linkedpair
+        if self.storage[index] == None:
+            self.storage[index] = LinkedPair(key, value)
+        # if it does already exist:
+        else:
+            # pointer for current key/value
+            existing = self.storage[index]
+            # if key is the same then change the value to prevent duplicates
+            if existing.key == key:
+                existing.value = value
+                return
+            # if not the same then as long as there is a next, do same duplication check
+            while existing.next:
+                if existing.next.key == key:
+                    existing.next.value = value
+                    return
+                # repoint the pointer
+                else:
+                    existing = existing.next
+            # if after going through the entire list there's no identical key, create a next to the last node
+            existing.next = LinkedPair(key, value)
 
     def remove(self, key):
         '''
@@ -63,8 +84,26 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        # pointer
+        current = self.storage[index]
 
+        # check for existence
+        if current.key == key:
+            self.storage[index] = current.next
+            return
+
+        # if not on initial level, check if on linked list
+        while current.next:
+            if current.next.key == key:
+                # change pointer to next node in linked list
+                current.next = current.next.next
+                return
+            # change pointer
+            else:
+                current = current.next
+
+        print(f"Key not found in storage")
 
     def retrieve(self, key):
         '''
@@ -74,8 +113,18 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
+        index = self._hash_mod(key)
+        # store initial node
+        current = self.storage[index]
 
+        while current:
+            if current.key == key:
+                return current.value
+            # if no match change pointer
+            else:
+                current = current.next
+        # if not in linked list return none
+        return None
 
     def resize(self):
         '''
@@ -84,8 +133,20 @@ class HashTable:
 
         Fill this in.
         '''
-        pass
-
+        # create new array
+        storage = [None] * self.capacity * 2
+        # copy old storage
+        old = self.storage
+        # point storage to new array
+        self.storage = storage
+        # double capacity
+        self.capacity *= 2
+        # fill new array with old storage
+        for i in old:
+            current = i
+            while current:
+                self.insert(current.key, current.value)
+                current = current.next
 
 
 if __name__ == "__main__":
